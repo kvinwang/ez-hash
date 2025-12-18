@@ -33,4 +33,4 @@ blake2 = { version = "0.10", optional = true }
 blake3 = { version = "1.5", optional = true }
 
 [dev-dependencies]
-hex = "0.4"
+hex-literal = "0.4"
