@@ -1,4 +1,4 @@
-# easy-hash
+# ez-hash
 
 Ergonomic hashing helpers for Rust.
 
@@ -10,13 +10,13 @@ Ergonomic hashing helpers for Rust.
 
 ```toml
 [dependencies]
-easy-hash = "1.0"
+ez-hash = "1.0"
 ```
 
 To enable only selected algorithms:
 
 ```toml
-easy-hash = { version = "1.0", default-features = false, features = ["sha2", "sha3"] }
+ez-hash = { version = "1.0", default-features = false, features = ["sha2", "sha3"] }
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ easy-hash = { version = "1.0", default-features = false, features = ["sha2", "sh
 Single-part:
 
 ```rust
-use easy_hash::sha256;
+use ez_hash::sha256;
 
 let digest = sha256("hello");
 ```
@@ -32,7 +32,7 @@ let digest = sha256("hello");
 Multi-part (tuple / array / vec):
 
 ```rust
-use easy_hash::{keccak256, sha256};
+use ez_hash::{keccak256, sha256};
 
 let a = sha256(("a", "bc"));
 let b = sha256(["a", "b", "c"]);
@@ -43,7 +43,7 @@ assert_eq!(a, b);
 Bytes:
 
 ```rust
-use easy_hash::sha256;
+use ez_hash::sha256;
 
 let bytes = 1u32.to_le_bytes();
 let digest = sha256(bytes);

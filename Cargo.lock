@@ -98,7 +98,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "easy-hash"
+name = "ez-hash"
 version = "1.0.0"
 dependencies = [
  "blake2",

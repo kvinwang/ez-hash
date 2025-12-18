@@ -1,5 +1,5 @@
 [package]
-name = "easy-hash"
+name = "ez-hash"
 version = "1.0.0"
 edition = "2021"
 
@@ -7,9 +7,9 @@ description = "Ergonomic hashing helpers with a simple Hashable API and optional
 license = "Apache-2.0"
 readme = "README.md"
 
-repository = "https://github.com/kvinwang/easy-hash"
-homepage = "https://github.com/kvinwang/easy-hash"
-documentation = "https://docs.rs/easy-hash"
+repository = "https://github.com/kvinwang/ez-hash"
+homepage = "https://github.com/kvinwang/ez-hash"
+documentation = "https://docs.rs/ez-hash"
 
 keywords = ["hash", "sha2", "sha3", "keccak", "blake"]
 categories = ["cryptography"]

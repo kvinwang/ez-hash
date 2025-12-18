@@ -1,4 +1,4 @@
-use easy_hash::{
+use ez_hash::{
     blake2b_256, blake2b_512, blake2s_256, blake3, keccak256, md5, sha1, sha224, sha256, sha384,
     sha3_256, sha3_512, sha512, sha512_256,
 };
