@@ -203,12 +203,15 @@ pub fn blake2s_256<T: Hashable>(data: T) -> [u8; 32] {
 }
 
 #[cfg(feature = "blake3")]
-pub fn blake3<T: Hashable>(data: T) -> [u8; 32] {
+pub fn blake3<const N: usize, T: Hashable>(data: T) -> [u8; N] {
     let mut hasher = blake3::Hasher::new();
     data.update_hasher(&mut |bytes| {
         hasher.update(bytes);
     });
-    *hasher.finalize().as_bytes()
+
+    let mut out = [0u8; N];
+    hasher.finalize_xof().fill(&mut out);
+    out
 }
 
 #[cfg(feature = "md5")]

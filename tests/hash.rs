@@ -35,7 +35,25 @@ fn test_md5_abc() {
 
 #[test]
 fn test_blake3_abc_equivalence() {
-    assert_eq!(blake3("abc"), blake3(("a", "bc")));
+    let a: [u8; 32] = blake3("abc");
+    let b: [u8; 32] = blake3(("a", "bc"));
+    assert_eq!(a, b);
+}
+
+#[test]
+fn test_blake3_other_sizes() {
+    let h16_a: [u8; 16] = blake3("abc");
+    let h16_b: [u8; 16] = blake3(("a", "bc"));
+    assert_eq!(h16_a, h16_b);
+
+    let h32: [u8; 32] = blake3("abc");
+    let h64: [u8; 64] = blake3("abc");
+
+    let h16_from_32: [u8; 16] = h32[..16].try_into().unwrap();
+    let h32_from_64: [u8; 32] = h64[..32].try_into().unwrap();
+
+    assert_eq!(h16_a, h16_from_32);
+    assert_eq!(h32, h32_from_64);
 }
 
 #[test]
