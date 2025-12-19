@@ -1,6 +1,6 @@
 [package]
 name = "ez-hash"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 
 description = "Ergonomic hashing helpers with a simple Hashable API and optional algorithm features."
@@ -33,4 +33,4 @@ blake2 = { version = "0.10", optional = true }
 blake3 = { version = "1.5", optional = true }
 
 [dev-dependencies]
-hex-literal = "0.4"
+hex-literal = "1.1.0"
