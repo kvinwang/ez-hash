@@ -1,226 +1,91 @@
 #[allow(unused_imports)]
 use crate::Hashable;
+use digest::Digest;
 
-#[cfg(feature = "sha1")]
-pub fn sha1<T: Hashable>(data: T) -> [u8; 20] {
-    use sha1::{Digest as _, Sha1};
-
-    let mut hasher = Sha1::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
+pub trait Hasher {
+    type Output: AsRef<[u8]> + Sized + Copy + Clone + Hashable;
+    fn hash<T: Hashable>(data: T) -> Self::Output;
+    fn zeros() -> Self::Output;
 }
 
-#[cfg(feature = "sha2")]
-pub fn sha224<T: Hashable>(data: T) -> [u8; 28] {
-    use sha2::{Digest as _, Sha224};
+macro_rules! def_hasher {
+    ($crt: ident, $ty: ident, $func:ident, $sz: expr) => {
+        pub struct $ty;
 
-    let mut hasher = Sha224::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
+        impl Hasher for $ty {
+            type Output = [u8; $sz];
+            fn hash<T: Hashable>(data: T) -> Self::Output {
+                $func(data)
+            }
+            fn zeros() -> Self::Output {
+                [0; $sz]
+            }
+        }
 
-#[cfg(feature = "sha2")]
-pub fn sha256<T: Hashable>(data: T) -> [u8; 32] {
-    use sha2::{Digest as _, Sha256};
+        pub fn $func<T: Hashable>(data: T) -> [u8; $sz] {
+            use $crt::$ty;
 
-    let mut hasher = Sha256::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha2")]
-pub fn sha384<T: Hashable>(data: T) -> [u8; 48] {
-    use sha2::{Digest as _, Sha384};
-
-    let mut hasher = Sha384::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha2")]
-pub fn sha512<T: Hashable>(data: T) -> [u8; 64] {
-    use sha2::{Digest as _, Sha512};
-
-    let mut hasher = Sha512::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha2")]
-pub fn sha512_224<T: Hashable>(data: T) -> [u8; 28] {
-    use sha2::{Digest as _, Sha512_224};
-
-    let mut hasher = Sha512_224::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha2")]
-pub fn sha512_256<T: Hashable>(data: T) -> [u8; 32] {
-    use sha2::{Digest as _, Sha512_256};
-
-    let mut hasher = Sha512_256::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha3")]
-pub fn sha3_224<T: Hashable>(data: T) -> [u8; 28] {
-    use sha3::{Digest as _, Sha3_224};
-
-    let mut hasher = Sha3_224::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha3")]
-pub fn sha3_256<T: Hashable>(data: T) -> [u8; 32] {
-    use sha3::{Digest as _, Sha3_256};
-
-    let mut hasher = Sha3_256::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha3")]
-pub fn sha3_384<T: Hashable>(data: T) -> [u8; 48] {
-    use sha3::{Digest as _, Sha3_384};
-
-    let mut hasher = Sha3_384::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha3")]
-pub fn sha3_512<T: Hashable>(data: T) -> [u8; 64] {
-    use sha3::{Digest as _, Sha3_512};
-
-    let mut hasher = Sha3_512::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha3")]
-pub fn keccak256<T: Hashable>(data: T) -> [u8; 32] {
-    use sha3::{Digest as _, Keccak256};
-
-    let mut hasher = Keccak256::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "sha3")]
-pub fn keccak512<T: Hashable>(data: T) -> [u8; 64] {
-    use sha3::{Digest as _, Keccak512};
-
-    let mut hasher = Keccak512::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "blake2")]
-pub fn blake2b_256<T: Hashable>(data: T) -> [u8; 32] {
-    use blake2::{Blake2b, Digest as _};
-    use digest::consts::U32;
-
-    let mut hasher = Blake2b::<U32>::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "blake2")]
-pub fn blake2b_384<T: Hashable>(data: T) -> [u8; 48] {
-    use blake2::{Blake2b, Digest as _};
-    use digest::consts::U48;
-
-    let mut hasher = Blake2b::<U48>::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "blake2")]
-pub fn blake2b_512<T: Hashable>(data: T) -> [u8; 64] {
-    use blake2::{Blake2b512, Digest as _};
-
-    let mut hasher = Blake2b512::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "blake2")]
-pub fn blake2s_128<T: Hashable>(data: T) -> [u8; 16] {
-    use blake2::{Blake2s, Digest as _};
-    use digest::consts::U16;
-
-    let mut hasher = Blake2s::<U16>::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "blake2")]
-pub fn blake2s_256<T: Hashable>(data: T) -> [u8; 32] {
-    use blake2::{Blake2s256, Digest as _};
-
-    let mut hasher = Blake2s256::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
-}
-
-#[cfg(feature = "blake3")]
-pub fn blake3<const N: usize, T: Hashable>(data: T) -> [u8; N] {
-    let mut hasher = blake3::Hasher::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-
-    let mut out = [0u8; N];
-    hasher.finalize_xof().fill(&mut out);
-    out
+            let mut hasher = $ty::new();
+            data.update_hasher(&mut |bytes| {
+                hasher.update(bytes);
+            });
+            hasher.finalize().into()
+        }
+    };
 }
 
 #[cfg(feature = "md5")]
-pub fn md5<T: Hashable>(data: T) -> [u8; 16] {
-    use md5::{Digest as _, Md5};
+def_hasher!(md5, Md5, md5, 16);
 
-    let mut hasher = Md5::new();
-    data.update_hasher(&mut |bytes| {
-        hasher.update(bytes);
-    });
-    hasher.finalize().into()
+#[cfg(feature = "sha2")]
+def_hasher!(sha1, Sha1, sha1, 20);
+#[cfg(feature = "sha2")]
+def_hasher!(sha2, Sha224, sha224, 28);
+#[cfg(feature = "sha2")]
+def_hasher!(sha2, Sha256, sha256, 32);
+#[cfg(feature = "sha2")]
+def_hasher!(sha2, Sha384, sha384, 48);
+#[cfg(feature = "sha2")]
+def_hasher!(sha2, Sha512, sha512, 64);
+#[cfg(feature = "sha2")]
+def_hasher!(sha2, Sha512_224, sha512_224, 28);
+#[cfg(feature = "sha2")]
+def_hasher!(sha2, Sha512_256, sha512_256, 32);
+
+#[cfg(feature = "sha3")]
+def_hasher!(sha3, Sha3_224, sha3_224, 28);
+#[cfg(feature = "sha3")]
+def_hasher!(sha3, Sha3_256, sha3_256, 32);
+#[cfg(feature = "sha3")]
+def_hasher!(sha3, Sha3_384, sha3_384, 48);
+#[cfg(feature = "sha3")]
+def_hasher!(sha3, Sha3_512, sha3_512, 64);
+#[cfg(feature = "sha3")]
+def_hasher!(sha3, Keccak256, keccak256, 32);
+#[cfg(feature = "sha3")]
+def_hasher!(sha3, Keccak512, keccak512, 64);
+
+#[cfg(feature = "blake2")]
+def_hasher!(blake2_helper, Blake2b256, blake2b_256, 32);
+#[cfg(feature = "blake2")]
+def_hasher!(blake2_helper, Blake2b384, blake2b_384, 48);
+#[cfg(feature = "blake2")]
+def_hasher!(blake2_helper, Blake2b512, blake2b_512, 64);
+#[cfg(feature = "blake2")]
+def_hasher!(blake2_helper, Blake2s128, blake2s_128, 16);
+#[cfg(feature = "blake2")]
+def_hasher!(blake2_helper, Blake2s256, blake2s_256, 32);
+
+#[cfg(feature = "blake2")]
+mod blake2_helper {
+    pub type Blake2b256 = blake2::Blake2b<digest::consts::U32>;
+    pub type Blake2b384 = blake2::Blake2b<digest::consts::U48>;
+    pub type Blake2s128 = blake2::Blake2s<digest::consts::U16>;
+    pub type Blake2s256 = blake2::Blake2s256;
+    pub type Blake2b512 = blake2::Blake2b512;
 }
+
+#[cfg(feature = "blake3")]
+pub use blake3_helper::*;
+#[cfg(feature = "blake3")]
+mod blake3_helper;
